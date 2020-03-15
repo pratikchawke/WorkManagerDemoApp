@@ -58,16 +58,15 @@
             android:text="Result : "
             android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/periodicTaskResult"
-            android:layout_width="wrap_content"
-            android:text="Result : "
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center_horizontal" />
+<!--        <TextView-->
+<!--            android:id="@+id/periodicTaskResult"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:text="Result : "-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:gravity="center_horizontal" />-->
         </LinearLayout>
     </LinearLayout>
 
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
