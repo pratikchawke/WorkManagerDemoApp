@@ -1,21 +1,18 @@
 package com.pratik.workmanager
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var singleTaskResult : TextView
-    companion object{
+    lateinit var singleTaskResult: TextView
+
+    companion object {
         val KEY_INPUT_TEXT = "key_input_text"
         val KEY_OUTPUT_TEXT = "key_output_text"
     }
@@ -29,33 +26,68 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun performSingleTask(view: View) {
+
         val data = Data.Builder()
-            .putString(KEY_INPUT_TEXT,"This is OneTimeTaskRequest !!!")
+            .putString(KEY_INPUT_TEXT, "This is OneTimeTaskRequest !!!")
+            .build()
+
+        val constraint = Constraints.Builder()
+            .setRequiresCharging(true)
             .build()
 
         val singleTask = OneTimeWorkRequest.Builder(OneTimeTaskWorker::class.java)
             .setInputData(data)
+            .setConstraints(constraint)
             .build()
 
         WorkManager.getInstance(applicationContext).enqueue(singleTask)
 
         WorkManager.getInstance(applicationContext).getWorkInfoByIdLiveData(singleTask.id)
             .observe(this, Observer { workinfo ->
-                if (workinfo!=null){
+                if (workinfo != null) {
 
-                    if(workinfo.state.isFinished){
+                    if (workinfo.state.isFinished) {
                         val outputData = workinfo.outputData.getString(KEY_OUTPUT_TEXT)
-                        singleTaskResult.append(outputData+"\n")
+                        singleTaskResult.append(outputData + "\n")
                     }
 
-                    singleTaskResult.append(workinfo.state.name+"\n")
+                    singleTaskResult.append(workinfo.state.name + "\n")
                 }
             })
 
     }
+
     fun performPeriodicTask(view: View) {
-        val periodicTask = PeriodicWorkRequest.Builder(PeriodicTaskWorker::class.java,16,TimeUnit.MINUTES)
+
+
+        val data = Data.Builder()
+            .putString(KEY_INPUT_TEXT, "This is OneTimeTaskRequest !!!")
             .build()
+
+        val constraint = Constraints.Builder()
+            .setRequiresCharging(true)
+            .build()
+
+        val periodicTask =
+            PeriodicWorkRequest.Builder(PeriodicTaskWorker::class.java, 16, TimeUnit.MINUTES)
+                .setInputData(data)
+                .setConstraints(constraint)
+                .build()
+
         WorkManager.getInstance(applicationContext).enqueue(periodicTask)
+
+        WorkManager.getInstance(applicationContext).getWorkInfoByIdLiveData(periodicTask.id)
+            .observe(this, Observer { workinfo ->
+                if (workinfo != null) {
+
+                    if (workinfo.state.isFinished) {
+                        val outputData = workinfo.outputData.getString(KEY_OUTPUT_TEXT)
+                        singleTaskResult.append(outputData + "\n")
+                    }
+
+                    singleTaskResult.append(workinfo.state.name + "\n")
+                }
+            })
+
     }
 }
