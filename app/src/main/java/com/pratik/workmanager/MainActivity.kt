@@ -17,6 +17,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var singleTaskResult : TextView
     companion object{
         val KEY_INPUT_TEXT = "key_input_text"
+        val KEY_OUTPUT_TEXT = "key_output_text"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,12 @@ class MainActivity : AppCompatActivity() {
         WorkManager.getInstance(applicationContext).getWorkInfoByIdLiveData(singleTask.id)
             .observe(this, Observer { workinfo ->
                 if (workinfo!=null){
+
+                    if(workinfo.state.isFinished){
+                        val outputData = workinfo.outputData.getString(KEY_OUTPUT_TEXT)
+                        singleTaskResult.append(outputData+"\n")
+                    }
+
                     singleTaskResult.append(workinfo.state.name+"\n")
                 }
             })
